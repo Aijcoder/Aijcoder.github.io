@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aijcoder — five finished projects in Python, Django, Ursina and JavaScript.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F0EEE6'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23C96442' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<title>Aijcoder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,200..600;1,6..72,200..600&display=swap">
+<style>
+  :root {
+    --paper:      #F0EEE6;
+    --raised:     #F7F5EF;
+    --sunk:       #E8E5DA;
+    --ink:        #191817;
+    --ink-soft:   #6B6660;
+    --clay:       #C96442;
+    --clay-deep:  #A34C2E;
+    --rule:       #DEDACD;
+
+    --paper-rgb: 240, 238, 230;
+    --ink-rgb:   25, 24, 23;
+    --soft-rgb:  107, 102, 96;
+    --clay-rgb:  201, 100, 66;
+    --rule-rgb:  190, 184, 168;
+
+    --serif: "Newsreader", "Songti SC", "Noto Serif SC", Georgia, serif;
+    --sans:  "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --gutter: clamp(1.5rem, 5vw, 4.5rem);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #1F1E1D;
+      --raised:    #292826;
+      --sunk:      #161514;
+      --ink:       #EDEAE1;
+      --ink-soft:  #A29C92;
+      --clay:      #E08A6B;
+      --clay-deep: #EDA184;
+      --rule:      #383530;
+
+      --paper-rgb: 31, 30, 29;
+      --ink-rgb:   237, 234, 225;
+      --soft-rgb:  162, 156, 146;
+      --clay-rgb:  224, 138, 107;
+      --rule-rgb:  86, 81, 73;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:     #1F1E1D;
+    --raised:    #292826;
+    --sunk:      #161514;
+    --ink:       #EDEAE1;
+    --ink-soft:  #A29C92;
+    --clay:      #E08A6B;
+    --clay-deep: #EDA184;
+    --rule:      #383530;
+
+    --paper-rgb: 31, 30, 29;
+    --ink-rgb:   237, 234, 225;
+    --soft-rgb:  162, 156, 146;
+    --clay-rgb:  224, 138, 107;
+    --rule-rgb:  86, 81, 73;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  ::selection { background: rgba(var(--clay-rgb), 0.22); }
+
+  :focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---------- bilingual ---------- */
+  [data-lang] { display: none; }
+  #site[data-site-lang="en"] [data-lang="en"] { display: inline; }
+  #site[data-site-lang="zh"] [data-lang="zh"] { display: inline; }
+
+  /* ---------- shell ---------- */
+  .shell {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(var(--paper-rgb), 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+  .nav[data-stuck="true"] { border-bottom-color: var(--rule); }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.1rem;
+  }
+
+  .mark {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .nav__links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-block: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .nav__links a:hover { color: var(--ink); }
+  .nav__links a[aria-current="true"] {
+    color: var(--clay-deep);
+    border-bottom-color: var(--clay);
+  }
+
+  .lang {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+  .lang button {
+    appearance: none; border: 0; background: none;
+    padding: 0.3rem 0.4rem;
+    font: inherit; color: var(--ink-soft); cursor: pointer;
+    transition: color 0.18s ease;
+  }
+  .lang button:hover { color: var(--ink); }
+  .lang button[aria-pressed="true"] { color: var(--clay-deep); }
+  .lang .sep { color: var(--rule); }
+
+  @media (max-width: 44rem) {
+    .nav__links { display: none; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(4rem, 12vw, 8rem) clamp(3.5rem, 9vw, 6rem);
+  }
+  #net {
+    position: absolute;
+    top: -2.5rem;
+    left: -1rem;
+    width: calc(100% + 2rem);
+    height: calc(100% + 5rem);
+    z-index: -1;
+    opacity: 0.85;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3.2rem, 11vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .hero h1 em { font-style: italic; font-weight: 200; color: var(--clay); }
+
+  .hero p {
+    max-width: 33rem;
+    margin: 1.9rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    color: var(--ink-soft);
+  }
+
+  .hero .contact {
+    margin-top: 2rem;
+    display: flex; flex-wrap: wrap; gap: 0 1.5rem;
+    font-family: var(--mono); font-size: 0.775rem;
+  }
+  .hero .contact a {
+    color: var(--ink); text-decoration: none;
+    padding-bottom: 2px; border-bottom: 1px solid var(--rule);
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .hero .contact a:hover { color: var(--clay-deep); border-bottom-color: var(--clay); }
+
+  .hint {
+    margin-top: 2.6rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hint::before {
+    content: ""; width: 1.8rem; height: 1px; background: var(--clay);
+  }
+
+  /* ---------- section frame ---------- */
+  .band { padding-block: clamp(4rem, 10vw, 7rem); }
+  .band--sunk { background: var(--sunk); }
+
+  .eyebrow {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin: 0 0 2rem;
+    font-family: var(--mono);
+    font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+  .eyebrow .count { color: var(--clay-deep); letter-spacing: 0.1em; }
+
+  .lede {
+    max-width: 32rem;
+    margin: -1rem 0 2.5rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- project index ---------- */
+  .index { border-bottom: 1px solid var(--rule); }
+  .project {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 12rem;
+    gap: 0 2rem;
+    padding: 2.3rem 1rem;
+    margin-inline: -1rem;
+    border-top: 1px solid var(--rule);
+    text-decoration: none; color: inherit;
+    transition: background-color 0.22s ease;
+  }
+  .project:hover, .project:focus-visible { background: var(--raised); }
+  .project h3 {
+    margin: 0;
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(1.55rem, 3.4vw, 2.05rem);
+    line-height: 1.15; letter-spacing: -0.015em;
+    transition: color 0.22s ease;
+  }
+  .project:hover h3, .project:focus-visible h3 { color: var(--clay-deep); }
+  .project .desc {
+    margin: 0.8rem 0 0; max-width: 33rem;
+    font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft);
+  }
+  .stack { display: flex; flex-wrap: wrap; gap: 0.4rem 0.45rem; margin-top: 1.1rem; }
+  .stack span {
+    font-family: var(--mono); font-size: 0.655rem; letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    padding: 0.22rem 0.5rem;
+    border: 1px solid var(--rule); border-radius: 2px;
+    white-space: nowrap;
+  }
+  .meta {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem;
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--ink-soft); text-align: right; padding-top: 0.5rem;
+  }
+  .meta .year { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .meta .slug { font-size: 0.62rem; line-height: 1.45; overflow-wrap: anywhere; }
+  .meta .go {
+    margin-top: 0.3rem; font-size: 0.85rem; color: var(--clay);
+    transition: transform 0.22s cubic-bezier(0.3, 0.8, 0.4, 1);
+  }
+  .project:hover .go, .project:focus-visible .go { transform: translate(3px, -3px); }
+
+  /* ---------- constellation ---------- */
+  .map-frame {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  #map-svg { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
+  #map-svg.dragging { cursor: grabbing; }
+
+  .map-note {
+    position: absolute; left: 0.9rem; bottom: 0.75rem;
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); pointer-events: none;
+  }
+
+  .n-link { stroke: rgba(var(--rule-rgb), 0.9); stroke-width: 1; transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease; }
+  .n-link.lit { stroke: var(--clay); stroke-width: 1.6; }
+  .n-link.dim { opacity: 0.18; }
+
+  .n-node circle { transition: fill 0.25s ease, stroke 0.25s ease, r 0.25s ease; }
+  .n-node text {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em;
+    fill: var(--ink-soft); pointer-events: none;
+    transition: fill 0.25s ease;
+  }
+  .n-node--proj text { font-family: var(--serif); font-size: 14px; letter-spacing: 0; fill: var(--ink); }
+  .n-node text {
+    paint-order: stroke;
+    stroke: var(--paper);
+    stroke-width: 3.5px;
+    stroke-linejoin: round;
+  }
+  .n-node--proj circle { fill: var(--clay); stroke: none; }
+  .n-node--tech circle { fill: var(--paper); stroke: var(--ink-soft); stroke-width: 1.2; }
+  .n-node { cursor: grab; transition: opacity 0.25s ease; }
+  .n-node.dim { opacity: 0.22; }
+  .n-node.lit circle { stroke: var(--clay); }
+  .n-node.lit text { fill: var(--clay-deep); }
+  .n-node--tech.lit circle { fill: var(--clay); stroke: var(--clay); }
+
+  /* ---------- geometric tiles ---------- */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .tile {
+    appearance: none;
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.7rem 0.8rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    font: inherit; color: var(--ink);
+    cursor: pointer; text-align: left;
+    transition: border-color 0.22s ease, background-color 0.22s ease;
+  }
+  .tile:hover { border-color: var(--clay); }
+  .tile[aria-pressed="true"] { background: var(--raised); border-color: var(--clay); }
+
+  .glyph { width: 18px; height: 18px; flex: none; overflow: visible; }
+  .glyph rect {
+    fill: var(--ink-soft);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.3, 0.5, 1), fill 0.3s ease;
+  }
+  .tile--round .glyph rect { rx: 4px; }
+  .tile:hover .glyph rect, .tile[aria-pressed="true"] .glyph rect { fill: var(--clay); }
+  .tile:hover .glyph .g1 { transform: translate(-3px, -3px) rotate(calc(var(--r) * -1)); }
+  .tile:hover .glyph .g2 { transform: translate(3px, -3px) rotate(var(--r)); }
+  .tile:hover .glyph .g3 { transform: translate(-3px, 3px) rotate(var(--r)); }
+  .tile:hover .glyph .g4 { transform: translate(3px, 3px) rotate(calc(var(--r) * -1)); }
+  .tile[aria-pressed="true"] .glyph .g1 { transform: translate(2px, 2px) rotate(45deg); }
+  .tile[aria-pressed="true"] .glyph .g2 { transform: translate(-2px, 2px) rotate(45deg); }
+  .tile[aria-pressed="true"] .glyph .g3 { transform: translate(2px, -2px) rotate(45deg); }
+  .tile[aria-pressed="true"] .glyph .g4 { transform: translate(-2px, -2px) rotate(45deg); }
+
+  .tile__name { font-family: var(--mono); font-size: 0.7rem; flex: 1; }
+  .tile__n {
+    font-family: var(--mono); font-size: 0.62rem;
+    color: var(--ink-soft); font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- journey ---------- */
+  .journey-frame { margin-top: 0.5rem; overflow-x: auto; overflow-y: hidden; }
+  #journey-svg { display: block; width: 100%; min-width: 44rem; height: auto; }
+
+  #journey-svg .trail {
+    fill: none;
+    stroke: var(--clay);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #journey-svg .stop { transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1); }
+  #journey-svg.anim .stop { opacity: 0; transform: translateY(6px); }
+  #journey-svg.anim .stop.on { opacity: 1; transform: none; }
+  #journey-svg .glyph-line {
+    fill: none; stroke: var(--ink); stroke-width: 1.4;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  #journey-svg .dot { fill: var(--paper); stroke: var(--clay); stroke-width: 1.6; }
+  #journey-svg .j-date {
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em;
+    fill: var(--ink-soft);
+  }
+  #journey-svg .j-name { font-family: var(--serif); font-size: 13px; fill: var(--ink); }
+
+  /* ---------- placeholder ---------- */
+  .slot {
+    border: 1px dashed var(--rule);
+    border-radius: 3px;
+    padding: clamp(2rem, 6vw, 3.5rem);
+    text-align: center;
+    color: var(--ink-soft);
+  }
+  .slot h3 {
+    margin: 0 0 0.6rem;
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--ink);
+  }
+  .slot p { margin: 0; font-size: 0.9rem; max-width: 28rem; margin-inline: auto; }
+  .slot code {
+    font-family: var(--mono); font-size: 0.8rem;
+    color: var(--clay-deep);
+    background: var(--raised);
+    padding: 0.1rem 0.35rem; border-radius: 2px;
+  }
+
+  /* ---------- colophon ---------- */
+  .colophon {
+    border-top: 1px solid var(--rule);
+    padding-block: 2.2rem 3.5rem;
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 2rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .colophon a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent; transition: color 0.18s ease, border-color 0.18s ease; }
+  .colophon a:hover { color: var(--clay-deep); border-bottom-color: var(--clay); }
+
+  /* ---------- load-in ---------- */
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .hero h1, .hero p, .hero .contact, .hero .hint {
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  }
+  .hero p { animation-delay: 0.08s; }
+  .hero .contact { animation-delay: 0.15s; }
+  .hero .hint { animation-delay: 0.22s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      transition-duration: 0.001s !important;
+    }
+    #journey-svg .stop { opacity: 1; transform: none; }
+  }
+
+  /* ---------- narrow ---------- */
+  @media (max-width: 46rem) {
+    .project { grid-template-columns: minmax(0, 1fr); gap: 0.9rem 0; padding-block: 1.9rem; }
+    .meta { order: -1; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 0.85rem; padding-top: 0; text-align: left; }
+    .meta .go { margin-top: 0; margin-left: auto; }
+    .project .desc { margin-top: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<div id="site" data-site-lang="en">
+<script>
+  (function () {
+    var el = document.getElementById('site');
+    var saved = null;
+    try { saved = localStorage.getItem('aij-lang'); } catch (e) {}
+    el.setAttribute('data-site-lang', saved || ((navigator.language || 'en').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en'));
+  })();
+</script>
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner shell">
+      <a class="mark" href="#top">Aijcoder</a>
+      <div class="nav__links">
+        <a href="#work"><span data-lang="en">Work</span><span data-lang="zh">项目</span></a>
+        <a href="#map"><span data-lang="en">Map</span><span data-lang="zh">星图</span></a>
+        <a href="#journey"><span data-lang="en">Journey</span><span data-lang="zh">历程</span></a>
+        <a href="#about"><span data-lang="en">About</span><span data-lang="zh">关于</span></a>
+      </div>
+      <div class="lang">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <span class="sep">/</span>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero shell">
+      <canvas id="net" aria-hidden="true"></canvas>
+      <h1>
+        <span data-lang="en">Small things,<br><em>actually finished</em></span>
+        <span data-lang="zh">小而完整的<br><em>五个项目</em></span>
+      </h1>
+      <p>
+        <span data-lang="en">I&rsquo;m Aijcoder. I build web apps, desktop tools and games &mdash; mostly Python, usually Django. Plenty of repos never make it past the first weekend; these five did.</span>
+        <span data-lang="zh">我是 Aijcoder，写网页应用、桌面工具和游戏，主要用 Python，多数时候是 Django。很多仓库撑不过第一个周末，下面这五个撑过来了。</span>
+      </p>
+      <div class="contact">
+        <a href="https://github.com/Aijcoder" target="_blank" rel="noopener">github.com/Aijcoder</a>
+      </div>
+      <p class="hint">
+        <span data-lang="en">Move your cursor &mdash; the field follows</span>
+        <span data-lang="zh">移动鼠标，线条会跟着你走</span>
+      </p>
+    </section>
+
+    <section class="band shell" id="work">
+      <h2 class="eyebrow">
+        <span data-lang="en">Finished work</span>
+        <span data-lang="zh">已完成项目</span>
+        <span class="count">05</span>
+      </h2>
+
+      <div class="index">
+
+        <a class="project" href="https://github.com/Aijcoder/Hide-and-seek-Ursina" target="_blank" rel="noopener">
+          <div>
+            <h3><span data-lang="en">Hide &amp; Seek</span><span data-lang="zh">3D 多人捉迷藏</span></h3>
+            <p class="desc">
+              <span data-lang="en">A multiplayer 3D hide-and-seek game. A WebSocket server keeps every player&rsquo;s position in sync while a Tkinter launcher collects your name, the server address and your player colour &mdash; then drops you into the Ursina world with real-time shadows.</span>
+              <span data-lang="zh">多人 3D 捉迷藏游戏。WebSocket 服务端实时同步每个玩家的位置；客户端先用 Tkinter 启动器让你填名字、服务器地址、挑一个角色颜色，然后进入带实时阴影的 Ursina 场景。</span>
+            </p>
+            <div class="stack"><span>Python</span><span>Ursina</span><span>WebSocket</span><span>Tkinter</span></div>
+          </div>
+          <div class="meta">
+            <span class="year">2025</span>
+            <span class="slug">Hide-and-seek-Ursina</span>
+            <span class="go" aria-hidden="true">&#8599;</span>
+          </div>
+        </a>
+
+        <a class="project" href="https://github.com/Aijcoder/Django_AutoCitationGenerator" target="_blank" rel="noopener">
+          <div>
+            <h3><span data-lang="en">Auto Citation Generator</span><span data-lang="zh">自动引用生成器</span></h3>
+            <p class="desc">
+              <span data-lang="en">Give it a paragraph and it works out what kind of writing it is &mdash; argumentative essay, news article, blog post &mdash; then generates the Google queries you&rsquo;d need to source it. Selenium drives the classification; every run is logged. MIT licensed.</span>
+              <span data-lang="zh">丢给它一段文字，它先判断这属于哪一类写作（论说文、新闻报道、博客等），再生成对应的 Google 检索式，帮你找到可以引用的来源。分类由 Selenium 驱动完成，每次运行都写日志。MIT 协议开源。</span>
+            </p>
+            <div class="stack"><span>Python</span><span>Django</span><span>Selenium</span><span>SQLite</span></div>
+          </div>
+          <div class="meta">
+            <span class="year">2024&ndash;25</span>
+            <span class="slug">Django_AutoCitationGenerator</span>
+            <span class="go" aria-hidden="true">&#8599;</span>
+          </div>
+        </a>
+
+        <a class="project" href="https://github.com/Aijcoder/AiPromptHelper" target="_blank" rel="noopener">
+          <div>
+            <h3><span data-lang="en">AI Prompt Helper</span><span data-lang="zh">提示词管理器</span></h3>
+            <p class="desc">
+              <span data-lang="en">A small prompt library for ChatGPT and DeepSeek. Modifier lines live in three tiers &mdash; standard, ultra, academic &mdash; and you add, delete and list them from the command line without ever opening the JSON.</span>
+              <span data-lang="zh">给 ChatGPT 和 DeepSeek 用的小型提示词库。修饰语按 standard / ultra / academic 三档分类存放，命令行里就能增、删、查，不用手动去改 JSON 文件。</span>
+            </p>
+            <div class="stack"><span>Python</span><span>JSON</span><span>CLI</span></div>
+          </div>
+          <div class="meta">
+            <span class="year">2025</span>
+            <span class="slug">AiPromptHelper</span>
+            <span class="go" aria-hidden="true">&#8599;</span>
+          </div>
+        </a>
+
+        <a class="project" href="https://github.com/Aijcoder/CookingAI" target="_blank" rel="noopener">
+          <div>
+            <h3><span data-lang="en">Cooking AI</span><span data-lang="zh">做饭助手</span></h3>
+            <p class="desc">
+              <span data-lang="en">A web cooking assistant: say what&rsquo;s in the kitchen, get something worth making. Django on the back, recipes in SQLite, and a one-command launcher so it starts without the usual manage.py incantation.</span>
+              <span data-lang="zh">网页版做饭助手：告诉它冰箱里有什么，它给你一道值得做的菜。后端用 Django，菜谱存在 SQLite 里，还写了一个一行命令就能启动的脚本，不用每次背 manage.py 那串参数。</span>
+            </p>
+            <div class="stack"><span>Python</span><span>Django</span><span>JavaScript</span><span>SQLite</span></div>
+          </div>
+          <div class="meta">
+            <span class="year">2024</span>
+            <span class="slug">CookingAI</span>
+            <span class="go" aria-hidden="true">&#8599;</span>
+          </div>
+        </a>
+
+        <a class="project" href="https://github.com/Aijcoder/DjangoChatBot" target="_blank" rel="noopener">
+          <div>
+            <h3><span data-lang="en">Django ChatBot</span><span data-lang="zh">网页聊天机器人</span></h3>
+            <p class="desc">
+              <span data-lang="en">A browser chat client on Django and the OpenAI API, shipped as a tagged v1.0 with light and dark themes and a written setup guide &mdash; clone, configure, migrate, run. The only repo here that made it to a release.</span>
+              <span data-lang="zh">基于 Django 和 OpenAI API 的网页聊天客户端，正式发布了 v1.0，带亮色和暗色两套主题，并配了完整的部署文档：克隆、配置、迁移、启动。这也是这里唯一发过 release 的项目。</span>
+            </p>
+            <div class="stack"><span>Django</span><span>OpenAI API</span><span>PostgreSQL</span><span>JavaScript</span></div>
+          </div>
+          <div class="meta">
+            <span class="year">2024</span>
+            <span class="slug">DjangoChatBot</span>
+            <span class="go" aria-hidden="true">&#8599;</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <section class="band band--sunk" id="map">
+      <div class="shell">
+        <h2 class="eyebrow">
+          <span data-lang="en">Project map</span>
+          <span data-lang="zh">项目星图</span>
+          <span class="count">17</span>
+        </h2>
+        <p class="lede">
+          <span data-lang="en">Five projects and the twelve tools they share. Drag any node to pull the web around; tap a tool below to light up everything built with it.</span>
+          <span data-lang="zh">五个项目，十二样工具，连线代表"这个项目用到了它"。拖动任意节点可以拉动整张网，点下面的工具会点亮所有用到它的项目。</span>
+        </p>
+
+        <div class="map-frame">
+          <svg id="map-svg" viewBox="0 0 760 460" role="img" aria-label="Interactive map of projects and the tools they share"></svg>
+          <span class="map-note">
+            <span data-lang="en">Drag to rearrange</span>
+            <span data-lang="zh">可拖拽</span>
+          </span>
+        </div>
+
+        <div class="tiles" id="tiles"></div>
+      </div>
+    </section>
+
+    <section class="band shell" id="journey">
+      <h2 class="eyebrow">
+        <span data-lang="en">How it went</span>
+        <span data-lang="zh">一路走来</span>
+        <span class="count">2024&ndash;25</span>
+      </h2>
+      <p class="lede">
+        <span data-lang="en">One line, drawn as you scroll &mdash; a year of shipping, in the order it actually happened.</span>
+        <span data-lang="zh">一条线，随着你往下滚一笔一笔画出来 —— 按真实顺序排的这一年。</span>
+      </p>
+
+      <div class="journey-frame">
+        <svg id="journey-svg" viewBox="0 0 900 300" role="img" aria-label="Timeline of five projects from August 2024 to July 2025">
+          <path class="trail" id="trail" d="M 40 200 C 110 200 130 120 190 118 C 250 116 262 196 320 198 C 378 200 392 104 460 102 C 528 100 540 190 606 188 C 672 186 690 96 760 96 C 810 96 840 108 862 130"/>
+
+          <g class="stop" data-at="0.10">
+            <circle class="dot" cx="40" cy="200" r="5"/>
+            <path class="glyph-line" d="M 24 154 h 32 v 20 h -20 l -8 8 v -8 h -4 z"/>
+            <text class="j-date" x="24" y="234">2024.08</text>
+            <text class="j-name" x="24" y="252">Django ChatBot</text>
+          </g>
+
+          <g class="stop" data-at="0.26">
+            <circle class="dot" cx="190" cy="118" r="5"/>
+            <path class="glyph-line" d="M 176 84 c 0 -8 4 -12 4 -18 M 190 84 c 0 -8 4 -12 4 -18 M 204 84 c 0 -8 4 -12 4 -18 M 170 90 h 44 v 4 a 22 22 0 0 1 -44 0 z"/>
+            <text class="j-date" x="170" y="152">2024.08</text>
+            <text class="j-name" x="170" y="170">Cooking AI</text>
+          </g>
+
+          <g class="stop" data-at="0.44">
+            <circle class="dot" cx="320" cy="198" r="5"/>
+            <path class="glyph-line" d="M 306 150 h 26 l 8 8 v 20 h -34 z M 313 160 h 14 M 313 168 h 18"/>
+            <text class="j-date" x="304" y="234">2024.10</text>
+            <text class="j-name" x="304" y="252">Auto Citation Generator</text>
+          </g>
+
+          <g class="stop" data-at="0.62">
+            <circle class="dot" cx="460" cy="102" r="5"/>
+            <path class="glyph-line" d="M 446 52 h 30 M 446 62 h 22 M 446 72 h 26 M 438 46 v 32"/>
+            <text class="j-date" x="440" y="136">2025.03</text>
+            <text class="j-name" x="440" y="154">AI Prompt Helper</text>
+          </g>
+
+          <g class="stop" data-at="0.80">
+            <circle class="dot" cx="606" cy="188" r="5"/>
+            <path class="glyph-line" d="M 606 132 l 20 11 v 22 l -20 11 l -20 -11 v -22 z M 606 132 v 0 M 586 143 l 20 11 l 20 -11 M 606 154 v 22"/>
+            <text class="j-date" x="586" y="224">2025.07</text>
+            <text class="j-name" x="586" y="242">Hide &amp; Seek</text>
+          </g>
+
+          <g class="stop" data-at="0.96">
+            <text class="j-date" x="790" y="86" data-lang="en">NEXT</text>
+            <text class="j-date" x="790" y="86" data-lang="zh">下一个</text>
+            <text class="j-name" x="790" y="66">?</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="band shell" id="about">
+      <h2 class="eyebrow">
+        <span data-lang="en">About</span>
+        <span data-lang="zh">关于</span>
+      </h2>
+      <!-- ====== 这里留给你自己写 ======
+           把下面整个 <div class="slot"> 换成你的自我介绍就行。
+           想加新板块，照着上面 <section class="band shell" id="..."> 的结构复制一个，
+           再去 nav 里加一条链接。 -->
+      <div class="slot">
+        <h3>
+          <span data-lang="en">Your words go here</span>
+          <span data-lang="zh">这里留给你自己写</span>
+        </h3>
+        <p>
+          <span data-lang="en">Who you are, what you&rsquo;re studying, what you want to build next. Replace the <code>&lt;div class="slot"&gt;</code> block in <code>index.html</code> &mdash; the comment above it marks the spot.</span>
+          <span data-lang="zh">你是谁、在学什么、接下来想做什么。改 <code>index.html</code> 里的 <code>&lt;div class="slot"&gt;</code> 这一块就行，上面有注释标着位置。</span>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="colophon shell">
+    <span>
+      <span data-lang="en">Five repositories, written 2024&ndash;2025.</span>
+      <span data-lang="zh">五个仓库，写于 2024&ndash;2025 年。</span>
+    </span>
+    <span>
+      <a href="https://github.com/Aijcoder?tab=repositories" target="_blank" rel="noopener">
+        <span data-lang="en">All repositories &#8599;</span>
+        <span data-lang="zh">全部仓库 &#8599;</span>
+      </a>
+    </span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var root  = document.documentElement;
+  var site  = document.getElementById('site');
+  var calm  = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+  /* ============================================================
+     1. Language + navigation
+     ============================================================ */
+  (function () {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-set-lang]'));
+
+    function apply(lang) {
+      site.setAttribute('data-site-lang', lang);
+      root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+      buttons.forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
+      });
+      try { localStorage.setItem('aij-lang', lang); } catch (e) {}
+    }
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.setLang); });
+    });
+    apply(site.getAttribute('data-site-lang'));
+
+    var nav = document.getElementById('nav');
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav__links a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+
+    window.addEventListener('scroll', function () {
+      nav.setAttribute('data-stuck', String(window.scrollY > 8));
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var i = sections.indexOf(e.target);
+          links.forEach(function (a, j) { a.setAttribute('aria-current', String(i === j)); });
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      sections.forEach(function (s) { if (s) spy.observe(s); });
+    }
+  })();
+
+  /* ============================================================
+     2. Hero — a field of nodes the cursor pulls on
+     ============================================================ */
+  (function () {
+    var cv = document.getElementById('net');
+    if (!cv || !cv.getContext) return;
+    var ctx = cv.getContext('2d');
+
+    var W = 0, H = 0, dots = [], raf = null, visible = true;
+    var pointer = { x: -9999, y: -9999, on: false };
+    var ink = {};
+
+    function readColors() {
+      var cs = getComputedStyle(root);
+      ink.rule = cs.getPropertyValue('--rule-rgb').trim();
+      ink.soft = cs.getPropertyValue('--soft-rgb').trim();
+      ink.clay = cs.getPropertyValue('--clay-rgb').trim();
+    }
+
+    function seed() {
+      var target = clamp(Math.round(W * H / 13000), 26, 78);
+      dots = [];
+      for (var i = 0; i < target; i++) {
+        dots.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.24,
+          vy: (Math.random() - 0.5) * 0.24
+        });
+      }
+    }
+
+    function resize() {
+      var r = cv.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+    }
+
+    var LINK = 132, REACH = 168;
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      var i, j, a, b, dx, dy, d;
+
+      for (i = 0; i < dots.length; i++) {
+        for (j = i + 1; j < dots.length; j++) {
+          a = dots[i]; b = dots[j];
+          dx = a.x - b.x; dy = a.y - b.y;
+          d = Math.sqrt(dx * dx + dy * dy);
+          if (d > LINK) continue;
+          ctx.strokeStyle = 'rgba(' + ink.rule + ',' + (0.75 * (1 - d / LINK)).toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+
+      for (i = 0; i < dots.length; i++) {
+        a = dots[i];
+        d = REACH + 1;
+        if (pointer.on) {
+          dx = pointer.x - a.x; dy = pointer.y - a.y;
+          d = Math.sqrt(dx * dx + dy * dy);
+        }
+        if (d < REACH) {
+          var k = 1 - d / REACH;
+          ctx.strokeStyle = 'rgba(' + ink.clay + ',' + (0.5 * k * k).toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(pointer.x, pointer.y); ctx.stroke();
+          ctx.fillStyle = 'rgba(' + ink.clay + ',' + (0.35 + 0.5 * k).toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(a.x, a.y, 1.4 + 1.6 * k, 0, 6.2832); ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(' + ink.soft + ',0.42)';
+          ctx.beginPath(); ctx.arc(a.x, a.y, 1.4, 0, 6.2832); ctx.fill();
+        }
+      }
+    }
+
+    function step() {
+      for (var i = 0; i < dots.length; i++) {
+        var p = dots[i];
+        p.vx += (Math.random() - 0.5) * 0.016;
+        p.vy += (Math.random() - 0.5) * 0.016;
+
+        if (pointer.on) {
+          var dx = pointer.x - p.x, dy = pointer.y - p.y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d < REACH && d > 1) {
+            var pull = 0.055 * (1 - d / REACH);
+            p.vx += (dx / d) * pull;
+            p.vy += (dy / d) * pull;
+          }
+        }
+
+        p.vx *= 0.975; p.vy *= 0.975;
+        var sp = Math.hypot(p.vx, p.vy);
+        if (sp > 0.85) { p.vx = p.vx / sp * 0.85; p.vy = p.vy / sp * 0.85; }
+
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20; else if (p.y > H + 20) p.y = -20;
+      }
+      draw();
+      raf = requestAnimationFrame(step);
+    }
+
+    function start() { if (raf === null && !calm.matches) raf = requestAnimationFrame(step); }
+    function stop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+
+    readColors();
+    resize();
+    draw();
+
+    window.addEventListener('resize', function () { resize(); draw(); }, { passive: true });
+
+    cv.parentElement.addEventListener('pointermove', function (e) {
+      var r = cv.getBoundingClientRect();
+      pointer.x = e.clientX - r.left;
+      pointer.y = e.clientY - r.top;
+      pointer.on = e.pointerType !== 'touch';
+    }, { passive: true });
+    cv.parentElement.addEventListener('pointerleave', function () { pointer.on = false; });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        visible = es[0].isIntersecting;
+        if (visible) start(); else stop();
+      }, { threshold: 0 }).observe(cv);
+    } else { start(); }
+
+    var themeWatch = window.matchMedia('(prefers-color-scheme: dark)');
+    if (themeWatch.addEventListener) themeWatch.addEventListener('change', function () { readColors(); draw(); });
+    new MutationObserver(function () { readColors(); draw(); })
+      .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+    calm.addEventListener && calm.addEventListener('change', function () {
+      if (calm.matches) stop(); else if (visible) start();
+    });
+  })();
+
+  /* ============================================================
+     3. Project map — a small force layout you can pull apart
+     ============================================================ */
+  (function () {
+    var svg = document.getElementById('map-svg');
+    var tilesBox = document.getElementById('tiles');
+    if (!svg || !tilesBox) return;
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var W = 760, H = 460, PAD = 46;
+
+    var WORK = [
+      { id: 'hs', en: 'Hide & Seek',    zh: '捉迷藏',     tech: ['Python', 'Ursina', 'WebSocket', 'Tkinter'] },
+      { id: 'ac', en: 'Auto Citation',  zh: '自动引用',   tech: ['Python', 'Django', 'Selenium', 'SQLite'] },
+      { id: 'ph', en: 'Prompt Helper',  zh: '提示词库',   tech: ['Python', 'JSON', 'CLI'] },
+      { id: 'ck', en: 'Cooking AI',     zh: '做饭助手',   tech: ['Python', 'Django', 'JavaScript', 'SQLite'] },
+      { id: 'cb', en: 'Django ChatBot', zh: '聊天机器人', tech: ['Django', 'OpenAI API', 'PostgreSQL', 'JavaScript'] }
+    ];
+
+    var nodes = [], links = [], byId = {}, techUse = {};
+
+    WORK.forEach(function (p, i) {
+      var ang = (i / WORK.length) * Math.PI * 2;
+      var n = {
+        id: p.id, kind: 'proj', en: p.en, zh: p.zh,
+        x: W / 2 + Math.cos(ang) * 110, y: H / 2 + Math.sin(ang) * 80,
+        vx: 0, vy: 0, r: 7
+      };
+      nodes.push(n); byId[p.id] = n;
+      p.tech.forEach(function (t) { (techUse[t] = techUse[t] || []).push(p.id); });
+    });
+
+    Object.keys(techUse).forEach(function (t, i, all) {
+      var ang = (i / all.length) * Math.PI * 2 + 0.4;
+      var n = {
+        id: 't:' + t, kind: 'tech', en: t, zh: t, tech: t,
+        x: W / 2 + Math.cos(ang) * 210, y: H / 2 + Math.sin(ang) * 150,
+        vx: 0, vy: 0, r: 4
+      };
+      nodes.push(n); byId[n.id] = n;
+      techUse[t].forEach(function (pid) { links.push({ a: byId[pid], b: n, tech: t, proj: pid }); });
+    });
+
+    /* --- physics --- */
+    function tick() {
+      var i, j, a, b, dx, dy, d, f;
+
+      for (i = 0; i < nodes.length; i++) {
+        for (j = i + 1; j < nodes.length; j++) {
+          a = nodes[i]; b = nodes[j];
+          dx = b.x - a.x; dy = b.y - a.y;
+          d = Math.sqrt(dx * dx + dy * dy) || 0.5;
+          f = 3400 / (d * d);
+          if (f > 3) f = 3;
+          dx /= d; dy /= d;
+          if (!a.held) { a.vx -= dx * f; a.vy -= dy * f; }
+          if (!b.held) { b.vx += dx * f; b.vy += dy * f; }
+        }
+      }
+
+      links.forEach(function (l) {
+        var dx = l.b.x - l.a.x, dy = l.b.y - l.a.y;
+        var d = Math.sqrt(dx * dx + dy * dy) || 0.5;
+        var s = (d - 92) * 0.018;
+        dx /= d; dy /= d;
+        if (!l.a.held) { l.a.vx += dx * s; l.a.vy += dy * s; }
+        if (!l.b.held) { l.b.vx -= dx * s; l.b.vy -= dy * s; }
+      });
+
+      nodes.forEach(function (n) {
+        if (n.held) return;
+        n.vx += (W / 2 - n.x) * 0.0022;
+        n.vy += (H / 2 - n.y) * 0.0030;
+        n.vx *= 0.82; n.vy *= 0.82;
+        n.x = clamp(n.x + n.vx, PAD, W - PAD);
+        n.y = clamp(n.y + n.vy, PAD, H - PAD - 8);
+      });
+    }
+
+    for (var w = 0; w < 320; w++) tick();
+
+    /* --- render --- */
+    var gLinks = document.createElementNS(NS, 'g');
+    var gNodes = document.createElementNS(NS, 'g');
+    svg.appendChild(gLinks); svg.appendChild(gNodes);
+
+    links.forEach(function (l) {
+      l.el = document.createElementNS(NS, 'line');
+      l.el.setAttribute('class', 'n-link');
+      gLinks.appendChild(l.el);
+    });
+
+    nodes.forEach(function (n) {
+      var g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'n-node n-node--' + n.kind);
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', n.r);
+      var t = document.createElementNS(NS, 'text');
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('y', n.kind === 'proj' ? n.r + 17 : n.r + 12);
+      var en = document.createElementNS(NS, 'tspan'); en.setAttribute('data-lang', 'en'); en.textContent = n.en;
+      var zh = document.createElementNS(NS, 'tspan'); zh.setAttribute('data-lang', 'zh'); zh.textContent = n.zh;
+      t.appendChild(en); t.appendChild(zh);
+      g.appendChild(c); g.appendChild(t);
+      gNodes.appendChild(g);
+      n.el = g;
+    });
+
+    function paint() {
+      links.forEach(function (l) {
+        l.el.setAttribute('x1', l.a.x); l.el.setAttribute('y1', l.a.y);
+        l.el.setAttribute('x2', l.b.x); l.el.setAttribute('y2', l.b.y);
+      });
+      nodes.forEach(function (n) {
+        n.el.setAttribute('transform', 'translate(' + n.x.toFixed(1) + ',' + n.y.toFixed(1) + ')');
+      });
+    }
+    paint();
+
+    var loop = null, quiet = 0;
+    function animate() {
+      tick(); paint();
+      var moving = nodes.some(function (n) { return Math.abs(n.vx) + Math.abs(n.vy) > 0.05; });
+      quiet = moving ? 0 : quiet + 1;
+      if (quiet > 40 && !dragging) { loop = null; return; }
+      loop = requestAnimationFrame(animate);
+    }
+    function wake() { quiet = 0; if (loop === null) loop = requestAnimationFrame(animate); }
+
+    /* --- dragging --- */
+    var dragging = null;
+    function svgPoint(e) {
+      var r = svg.getBoundingClientRect();
+      return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
+    }
+    nodes.forEach(function (n) {
+      n.el.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        dragging = n; n.held = true;
+        svg.classList.add('dragging');
+        svg.setPointerCapture(e.pointerId);
+        wake();
+      });
+      n.el.addEventListener('pointerenter', function () { if (!active) highlight(n, true); });
+      n.el.addEventListener('pointerleave', function () { if (!active) highlight(null, false); });
+    });
+    svg.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var p = svgPoint(e);
+      dragging.x = clamp(p.x, PAD, W - PAD);
+      dragging.y = clamp(p.y, PAD, H - PAD - 8);
+      dragging.vx = dragging.vy = 0;
+      wake();
+    });
+    function release() {
+      if (!dragging) return;
+      dragging.held = false; dragging = null;
+      svg.classList.remove('dragging');
+      wake();
+    }
+    svg.addEventListener('pointerup', release);
+    svg.addEventListener('pointercancel', release);
+
+    /* --- highlighting --- */
+    var active = null;
+
+    function clear() {
+      nodes.forEach(function (n) { n.el.classList.remove('lit', 'dim'); });
+      links.forEach(function (l) { l.el.classList.remove('lit', 'dim'); });
+    }
+
+    function highlight(node, on) {
+      clear();
+      if (!on || !node) return;
+      var keep = {};
+      keep[node.id] = true;
+      links.forEach(function (l) {
+        var hit = l.a === node || l.b === node;
+        l.el.classList.add(hit ? 'lit' : 'dim');
+        if (hit) { keep[l.a.id] = true; keep[l.b.id] = true; }
+      });
+      nodes.forEach(function (n) { n.el.classList.add(keep[n.id] ? 'lit' : 'dim'); });
+    }
+
+    function setActiveTech(tech) {
+      active = tech;
+      Array.prototype.forEach.call(tilesBox.children, function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.tech === tech));
+      });
+      if (!tech) { clear(); return; }
+      highlight(byId['t:' + tech], true);
+    }
+
+    /* --- tech tiles --- */
+    var spins = ['14deg', '-20deg', '32deg', '10deg', '-28deg', '22deg'];
+    Object.keys(techUse).sort(function (a, b) {
+      return techUse[b].length - techUse[a].length || a.localeCompare(b);
+    }).forEach(function (t, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tile' + (i % 2 ? ' tile--round' : '');
+      b.dataset.tech = t;
+      b.setAttribute('aria-pressed', 'false');
+      b.style.setProperty('--r', spins[i % spins.length]);
+      b.innerHTML =
+        '<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">' +
+          '<rect class="g1" x="3" y="3" width="8" height="8"/>' +
+          '<rect class="g2" x="13" y="3" width="8" height="8"/>' +
+          '<rect class="g3" x="3" y="13" width="8" height="8"/>' +
+          '<rect class="g4" x="13" y="13" width="8" height="8"/>' +
+        '</svg>' +
+        '<span class="tile__name"></span>' +
+        '<span class="tile__n">' + techUse[t].length + '</span>';
+      b.querySelector('.tile__name').textContent = t;
+      b.addEventListener('click', function () {
+        setActiveTech(active === t ? null : t);
+      });
+      tilesBox.appendChild(b);
+    });
+  })();
+
+  /* ============================================================
+     4. Journey — one line, drawn by the scrollbar
+     ============================================================ */
+  (function () {
+    var svg = document.getElementById('journey-svg');
+    var trail = document.getElementById('trail');
+    if (!svg || !trail || !trail.getTotalLength) return;
+
+    var stops = Array.prototype.slice.call(svg.querySelectorAll('.stop'));
+    var len = trail.getTotalLength();
+
+    if (calm.matches) {
+      stops.forEach(function (s) { s.classList.add('on'); });
+      return;
+    }
+
+    svg.classList.add('anim');
+    trail.style.strokeDasharray = len;
+    trail.style.strokeDashoffset = len;
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var r = svg.getBoundingClientRect();
+      var vh = window.innerHeight || 800;
+      var p = clamp((vh * 0.86 - r.top) / (r.height + vh * 0.34), 0, 1);
+      trail.style.strokeDashoffset = (len * (1 - p)).toFixed(1);
+      stops.forEach(function (s) {
+        s.classList.toggle('on', p >= parseFloat(s.dataset.at));
+      });
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+})();
+</script>
+
+</body>
+</html>
