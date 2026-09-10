@@ -245,6 +245,7 @@
   /* ---------- section frame ---------- */
   .band { padding-block: clamp(4rem, 10vw, 7rem); }
   .band--sunk { background: var(--sunk); }
+  .band--tail { padding-bottom: clamp(8rem, 20vh, 16rem); }
 
   .eyebrow {
     display: flex; align-items: baseline; gap: 1rem;
@@ -625,7 +626,7 @@
       </div>
     </section>
 
-    <section class="band shell" id="journey">
+    <section class="band band--tail shell" id="journey">
       <h2 class="eyebrow">
         <span data-lang="en">How it went</span>
         <span data-lang="zh">一路走来</span>
@@ -640,42 +641,42 @@
         <svg id="journey-svg" viewBox="0 0 900 300" role="img" aria-label="Timeline of five projects from August 2024 to July 2025">
           <path class="trail" id="trail" d="M 40 200 C 110 200 130 120 190 118 C 250 116 262 196 320 198 C 378 200 392 104 460 102 C 528 100 540 190 606 188 C 672 186 690 96 760 96 C 810 96 840 108 862 130"/>
 
-          <g class="stop" data-at="0.10">
+          <g class="stop" data-at="0.08">
             <circle class="dot" cx="40" cy="200" r="5"/>
             <path class="glyph-line" d="M 24 154 h 32 v 20 h -20 l -8 8 v -8 h -4 z"/>
             <text class="j-date" x="24" y="234">2024.08</text>
             <text class="j-name" x="24" y="252">Django ChatBot</text>
           </g>
 
-          <g class="stop" data-at="0.26">
+          <g class="stop" data-at="0.24">
             <circle class="dot" cx="190" cy="118" r="5"/>
             <path class="glyph-line" d="M 176 84 c 0 -8 4 -12 4 -18 M 190 84 c 0 -8 4 -12 4 -18 M 204 84 c 0 -8 4 -12 4 -18 M 170 90 h 44 v 4 a 22 22 0 0 1 -44 0 z"/>
             <text class="j-date" x="170" y="152">2024.08</text>
             <text class="j-name" x="170" y="170">Cooking AI</text>
           </g>
 
-          <g class="stop" data-at="0.44">
+          <g class="stop" data-at="0.42">
             <circle class="dot" cx="320" cy="198" r="5"/>
             <path class="glyph-line" d="M 306 150 h 26 l 8 8 v 20 h -34 z M 313 160 h 14 M 313 168 h 18"/>
             <text class="j-date" x="304" y="234">2024.10</text>
             <text class="j-name" x="304" y="252">Auto Citation Generator</text>
           </g>
 
-          <g class="stop" data-at="0.62">
+          <g class="stop" data-at="0.60">
             <circle class="dot" cx="460" cy="102" r="5"/>
             <path class="glyph-line" d="M 446 52 h 30 M 446 62 h 22 M 446 72 h 26 M 438 46 v 32"/>
             <text class="j-date" x="440" y="136">2025.03</text>
             <text class="j-name" x="440" y="154">AI Prompt Helper</text>
           </g>
 
-          <g class="stop" data-at="0.80">
+          <g class="stop" data-at="0.78">
             <circle class="dot" cx="606" cy="188" r="5"/>
             <path class="glyph-line" d="M 606 132 l 20 11 v 22 l -20 11 l -20 -11 v -22 z M 606 132 v 0 M 586 143 l 20 11 l 20 -11 M 606 154 v 22"/>
             <text class="j-date" x="586" y="224">2025.07</text>
             <text class="j-name" x="586" y="242">Hide &amp; Seek</text>
           </g>
 
-          <g class="stop" data-at="0.96">
+          <g class="stop" data-at="0.92">
             <text class="j-date" x="790" y="86" data-lang="en">NEXT</text>
             <text class="j-date" x="790" y="86" data-lang="zh">下一个</text>
             <text class="j-name" x="790" y="66">?</text>
@@ -1136,12 +1137,26 @@
     trail.style.strokeDasharray = len;
     trail.style.strokeDashoffset = len;
 
+    var band = svg.closest('.band') || svg;
     var ticking = false;
+
     function update() {
       ticking = false;
-      var r = svg.getBoundingClientRect();
+      var doc = document.documentElement;
       var vh = window.innerHeight || 800;
-      var p = clamp((vh * 0.86 - r.top) / (r.height + vh * 0.34), 0, 1);
+      var y = window.pageYOffset || doc.scrollTop || 0;
+      var maxScroll = Math.max(0, doc.scrollHeight - vh);
+
+      var b = band.getBoundingClientRect();
+      var d = svg.getBoundingClientRect();
+      // finish once the drawing itself is fully in view, never later than the page end
+      var end = Math.min(d.bottom + y - vh * 0.85, maxScroll);
+      var start = Math.min(b.top + y - vh * 0.9, end - 120);
+      var span = end - start;
+
+      var p = span > 1 ? clamp((y - start) / span, 0, 1) : 1;
+      if (y >= maxScroll - 2) p = 1;   // however short the page gets, the line finishes
+
       trail.style.strokeDashoffset = (len * (1 - p)).toFixed(1);
       stops.forEach(function (s) {
         s.classList.toggle('on', p >= parseFloat(s.dataset.at));
